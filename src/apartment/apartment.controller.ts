@@ -10,8 +10,8 @@ export class ApartmentController {
   constructor(private readonly apartmentService: ApartmentService) {}
 
   @Post()
-  create(@Body() createApartmentDto: CreateApartmentDto) {
-    return this.apartmentService.create(createApartmentDto);
+  create(@Body() createApartmentDto: CreateApartmentDto, @Body('buildingId') id: number) {
+    return this.apartmentService.create(createApartmentDto, id);
   }
 
   @Get()

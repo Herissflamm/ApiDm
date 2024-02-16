@@ -39,11 +39,18 @@ export class BuildingService extends BaseService<BuildingEntity> {
     return this.buildingRepository.findOneBy({ id });
   }
 
-  update(id: number, updateBuildingDto: UpdateBuildingDto) {
-    return `This action updates a #${id} building`;
+  async update(id: number, updateBuildingDto: UpdateBuildingDto): Promise<BuildingEntity> {
+    const building = await this.buildingRepository.findOne({where: {id}})
+    if (!building){
+      throw new NotFoundException('Batiment introuvable');
+    }
+    Object.assign(building, updateBuildingDto);
+    return this.buildingRepository.save(building);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} building`;
+  async remove(id: number): Promise<BuildingEntity> {
+    const result = await this.findOne(id);
+    await this.buildingRepository.delete(id);
+    return result;
   }
 }

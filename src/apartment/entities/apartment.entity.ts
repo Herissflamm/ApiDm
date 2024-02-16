@@ -10,6 +10,12 @@ import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn,ManyToMany
 export class ApartmentEntity {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column()
+  floor: number;
+
+  @Column()
+  door: number;
     
   @ManyToOne(() => BuildingEntity, building => building.apartments)
   building: BuildingEntity;
