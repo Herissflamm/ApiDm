@@ -3,12 +3,12 @@ import { CommonFacilityEntity } from 'src/common-facility/entities/common-facili
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
 
 
-@Entity('Building_has_entity')
+@Entity('Building_has_facility')
 export class BuildingHasFacilityEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({nullable:true})
     renovationDate: Date;
 
     @ManyToOne(()=>BuildingEntity, building => building.facilities)

@@ -2,7 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { BuildingHasFacilityService } from './building_has_facility.service';
 import { CreateBuildingHasFacilityDto } from './dto/create-building_has_facility.dto';
 import { UpdateBuildingHasFacilityDto } from './dto/update-building_has_facility.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Facility By Building')
 @Controller('building-has-facility')
 export class BuildingHasFacilityController {
   constructor(private readonly buildingHasFacilityService: BuildingHasFacilityService) {}
