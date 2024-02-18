@@ -6,6 +6,7 @@ import { BuildingEntity } from './entities/building.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { AddressService } from 'src/address/address.service';
+import { CommonFacilityService } from 'src/common-facility/common-facility.service';
 
 
 
@@ -26,6 +27,7 @@ export class BuildingService extends BaseService<BuildingEntity> {
     const building = new BuildingEntity();
     Object.assign(building, createBuildingDto);
     const address = await this.addressService.create(createBuildingDto.createAddressDto);
+    
     building.address = address;
     return await this.saveEntities(building)?.[0];
   }

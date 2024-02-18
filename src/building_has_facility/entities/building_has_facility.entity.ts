@@ -1,6 +1,6 @@
 import { BuildingEntity } from 'src/building/entities/building.entity';
 import { CommonFacilityEntity } from 'src/common-facility/entities/common-facility.entity';
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
 
 
 @Entity('Building_has_entity')
@@ -12,9 +12,11 @@ export class BuildingHasFacilityEntity {
     renovationDate: Date;
 
     @ManyToOne(()=>BuildingEntity, building => building.facilities)
-    buildings: BuildingEntity;
+    @JoinColumn()
+    building: BuildingEntity;
 
     @ManyToOne(()=>CommonFacilityEntity, commonFacility => commonFacility.buildings)
-    facilities: BuildingEntity;
+    @JoinColumn()
+    facilitie: BuildingEntity;
 }
 

@@ -1,6 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class CreateBuildingHasFacilityDto {
+
+export class AssociateFacilityDto {
+    @ApiProperty()
+    facilityId: number;
     @ApiProperty()
     renovationDate: Date;
 }

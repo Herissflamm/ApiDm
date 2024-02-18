@@ -9,6 +9,8 @@ import { BuildingEntity } from 'src/building/entities/building.entity';
 import { BuildingService } from 'src/building/building.service';
 import { ApartmentTypeService } from 'src/apartment-type/apartment-type.service';
 import { ApartmentTypeEntity } from 'src/apartment-type/entities/apartment-type.entity';
+import { ApartmentOptionService } from 'src/apartment-option/apartment-option.service';
+import { ApartmentOptionEntity } from 'src/apartment-option/entities/apartment-option.entity';
 
 @Injectable()
 export class ApartmentService extends BaseService<ApartmentEntity>{
@@ -18,17 +20,28 @@ export class ApartmentService extends BaseService<ApartmentEntity>{
     protected readonly repository: Repository<ApartmentEntity>,
     protected readonly buildingService: BuildingService,
     protected readonly apartmentTypeService: ApartmentTypeService,
+    protected readonly apartmentOptionService: ApartmentOptionService,
     protected readonly dataSource: DataSource,
   ){
     super(dataSource);
   }
 
-  async create(createApartmentDto: CreateApartmentDto, BuildingId: number, TypeId:number): Promise<ApartmentEntity> {
+  async create(createApartmentDto: CreateApartmentDto): Promise<ApartmentEntity> {
     const apartment:ApartmentEntity = new ApartmentEntity();
     Object.assign(apartment,createApartmentDto);
-    const building:BuildingEntity = await this.buildingService.findOne(BuildingId)
-    const apartmentType:ApartmentTypeEntity = await this.apartmentTypeService.findOne(TypeId);
+    const building:BuildingEntity = await this.buildingService.findOne(createApartmentDto.buildingId)
+    const apartmentType:ApartmentTypeEntity = await this.apartmentTypeService.findOne(createApartmentDto.apartmentTypeId);
 
+    const options: ApartmentOptionEntity[] = [];
+    for (const optionId of createApartmentDto.options) {
+        const option = await this.apartmentOptionService.findOne(optionId);
+        if (option) {
+            options.push(option);
+        } else {
+            throw new NotFoundException(`Apartment option with ID ${optionId} not found`);
+        }
+    }
+    
     if (!building) {
       throw new Error('Building not found');
     }
@@ -37,13 +50,14 @@ export class ApartmentService extends BaseService<ApartmentEntity>{
     }
     apartment.building = building;
     apartment.type = apartmentType;
+    apartment.options = options;
     return (await this.saveEntities(apartment))?.[0];
   }
 
   async findAll(): Promise<ApartmentEntity[]> {
     try {
         const apartments: ApartmentEntity[] = await this.repository.find({
-            relations: ['building', 'type'], // Inclure les relations "building" et "type"
+            relations: ['building', 'type','options'],
         });
         return apartments;
     } catch (error) {
@@ -56,7 +70,7 @@ export class ApartmentService extends BaseService<ApartmentEntity>{
   async findOne(id: number):Promise<ApartmentEntity> {
     const result:ApartmentEntity = await this.repository.findOne({
       where: {id},
-      relations: ['type', 'building'],
+      relations: ['type', 'building','options'],
     })
     return result;
   }

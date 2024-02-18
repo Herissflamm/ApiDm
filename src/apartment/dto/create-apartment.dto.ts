@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { ApartmentOptionEntity } from "src/apartment-option/entities/apartment-option.entity";
 
 export class CreateApartmentDto {
     @ApiProperty()
@@ -12,5 +13,8 @@ export class CreateApartmentDto {
 
     @ApiProperty()
     door: number;
+
+    @ApiProperty({ type: [Number] })
+    options: number[];
     
 }

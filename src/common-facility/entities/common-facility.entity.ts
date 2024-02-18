@@ -18,13 +18,7 @@ import {
     @Column()
     name: string;
   
-    @Column({ nullable: true })
-    lastInspectionDate: Date;
-
-    @OneToMany(
-      () => BuildingHasFacilityEntity,
-      (BuildingHasFacilityEntity) => BuildingHasFacilityEntity.facilities
-    )
-    buildings: CommonFacilityEntity[];
+    @ManyToMany(()=> BuildingEntity, building => building.facilities)
+    buildings:BuildingEntity[];
   }
   
