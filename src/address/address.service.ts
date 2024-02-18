@@ -33,13 +33,12 @@ export class AddressService extends BaseService<AddressEntity> {
   }
 
   async update(id: number, updateAddressDto: UpdateAddressDto):Promise<AddressEntity> {
-    // Récupérer l'adresse existante depuis la base de données
-    const address = await this.repository.findOne({ where: { id } });
+    const address:AddressEntity = await this.repository.findOne({ where: { id } });
     if (!address) {
-      throw new NotFoundException('Adresse introuvable');
+      throw new NotFoundException('Address not found');
     }
     Object.assign(address, updateAddressDto);
-    return this.repository.save(address);
+    return await this.repository.save(address);
   }
 
   async deleteAddress(id: number): Promise<AddressEntity> {

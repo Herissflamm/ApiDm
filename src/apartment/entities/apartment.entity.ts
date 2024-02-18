@@ -19,12 +19,12 @@ export class ApartmentEntity {
     
   @ManyToOne(() => BuildingEntity, building => building.apartments)
   building: BuildingEntity;
+  
+  @ManyToOne(()=> ApartmentTypeEntity, apartmentType => apartmentType.apartments)
+  type: ApartmentTypeEntity;
 
   @ManyToOne(() => OwnerEntity, owner => owner.apartments)
   owner: OwnerEntity;
-
-  @ManyToOne(()=> ApartmentTypeEntity, apartmentType => apartmentType.apartments)
-  type: ApartmentTypeEntity[];
 
   @OneToMany(() => TenantEntity, tenant => tenant.apartment)
   tenants: TenantEntity[];

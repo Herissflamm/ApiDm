@@ -5,9 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ApartmentEntity } from './entities/apartment.entity';
 import { BuildingModule } from 'src/building/building.module';
 import { AddressModule } from 'src/address/address.module';
+import { ApartmentTypeModule } from 'src/apartment-type/apartment-type.module';
 
 @Module({
-  imports: [BuildingModule ,AddressModule,TypeOrmModule.forFeature([ApartmentEntity])],
+  imports: [BuildingModule ,AddressModule, ApartmentTypeModule, TypeOrmModule.forFeature([ApartmentEntity])],
   controllers: [ApartmentController],
   providers: [ApartmentService],
   exports:[ApartmentService]

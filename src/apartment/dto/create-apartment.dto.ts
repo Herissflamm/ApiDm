@@ -5,6 +5,9 @@ export class CreateApartmentDto {
     buildingId: number;
 
     @ApiProperty()
+    apartmentTypeId: number;
+
+    @ApiProperty()
     floor: number;
 
     @ApiProperty()

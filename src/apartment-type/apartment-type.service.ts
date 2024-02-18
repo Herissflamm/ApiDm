@@ -1,26 +1,49 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateApartmentTypeDto } from './dto/create-apartment-type.dto';
 import { UpdateApartmentTypeDto } from './dto/update-apartment-type.dto';
+import { BaseService } from 'src/@core/base-service';
+import { ApartmentTypeEntity } from './entities/apartment-type.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
-export class ApartmentTypeService {
-  create(createApartmentTypeDto: CreateApartmentTypeDto) {
-    return 'This action adds a new apartmentType';
+export class ApartmentTypeService extends BaseService<ApartmentTypeEntity>{
+
+  constructor(
+    @InjectRepository(ApartmentTypeEntity)
+    protected readonly repository: Repository<ApartmentTypeEntity>,
+    protected readonly dataSource: DataSource,
+  ){
+    super(dataSource);
   }
 
-  findAll() {
-    return `This action returns all apartmentType`;
+  async create(createApartmentTypeDto: CreateApartmentTypeDto) {
+    const apartmentType:ApartmentTypeEntity = new ApartmentTypeEntity();
+    Object.assign(apartmentType, createApartmentTypeDto);
+    
+    return (await this.saveEntities(apartmentType))?.[0];
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} apartmentType`;
+  findAll():Promise<ApartmentTypeEntity[]> {
+    return this.repository.find();
   }
 
-  update(id: number, updateApartmentTypeDto: UpdateApartmentTypeDto) {
-    return `This action updates a #${id} apartmentType`;
+  findOne(id: number):Promise<ApartmentTypeEntity> {
+    return this.repository.findOneBy({ id });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} apartmentType`;
+  async update(id: number, updateApartmentTypeDto: UpdateApartmentTypeDto) {
+    const apartmentType:ApartmentTypeEntity = await this.repository.findOne({where: {id}});
+    if (!apartmentType){
+      throw new NotFoundException("Type d'appartement introuvalbe");
+    }
+    Object.assign(apartmentType, updateApartmentTypeDto)
+    return await this.repository.save(apartmentType);
+  }
+
+  async remove(id: number) {
+    const result = await this.findOne(id);
+    await this.repository.delete(id);
+    return result
   }
 }
