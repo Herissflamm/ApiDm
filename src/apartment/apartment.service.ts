@@ -23,11 +23,11 @@ export class ApartmentService extends BaseService<ApartmentEntity>{
     super(dataSource);
   }
 
-  async create(createApartmentDto: CreateApartmentDto, id: number): Promise<ApartmentEntity> {
+  async create(createApartmentDto: CreateApartmentDto, BuildingId: number, TypeId:number): Promise<ApartmentEntity> {
     const apartment:ApartmentEntity = new ApartmentEntity();
     Object.assign(apartment,createApartmentDto);
-    const building:BuildingEntity = await this.buildingService.findOne(id)
-    const apartmentType:ApartmentTypeEntity = await this.apartmentTypeService.findOne(id);
+    const building:BuildingEntity = await this.buildingService.findOne(BuildingId)
+    const apartmentType:ApartmentTypeEntity = await this.apartmentTypeService.findOne(TypeId);
 
     if (!building) {
       throw new Error('Building not found');
