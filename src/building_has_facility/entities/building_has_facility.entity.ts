@@ -17,6 +17,6 @@ export class BuildingHasFacilityEntity {
 
     @ManyToOne(()=>CommonFacilityEntity, commonFacility => commonFacility.buildings)
     @JoinColumn()
-    facilitie: BuildingEntity;
+    facility: CommonFacilityEntity;
 }
 

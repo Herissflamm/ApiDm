@@ -19,13 +19,20 @@ export class BuildingHasFacilityService extends BaseService<BuildingHasFacilityE
   }
 
   async create(createBuildingHasFacilityDto: CreateBuildingHasFacilityDto):Promise<BuildingHasFacilityEntity> {
+    console.log(createBuildingHasFacilityDto);
     const infoFacilitie:BuildingHasFacilityEntity = new BuildingHasFacilityEntity();
-    Object.assign(infoFacilitie,createBuildingHasFacilityDto);
-    return(await this.saveEntities(infoFacilitie))?.[0];
+    /* Object.assign(infoFacilitie,createBuildingHasFacilityDto); */
+    infoFacilitie.building = createBuildingHasFacilityDto[1];
+    infoFacilitie.facility = createBuildingHasFacilityDto[2];
+    infoFacilitie.renovationDate = createBuildingHasFacilityDto[0];
+    console.log(infoFacilitie);
+    return await this.repository.save(infoFacilitie);
   }
 
   findAll():Promise<BuildingHasFacilityEntity[]>{
-    return this.repository.find();
+    return this.repository.find(
+      {relations:['building','facility'] }
+    );
   }
 
   findOne(id: number):Promise<BuildingHasFacilityEntity> {

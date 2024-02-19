@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { BuildingService } from './building.service';
 import { CreateBuildingDto } from './dto/create-building.dto';
 import { UpdateBuildingDto } from './dto/update-building.dto';
+import { AddFacilityDto } from './dto/add-facilities.dto';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('buildings')
@@ -11,7 +12,12 @@ export class BuildingController {
 
   @Post()
   create(@Body() createBuildingDto: CreateBuildingDto) {
-    return this.buildingService.create(createBuildingDto);
+    return this.buildingService.createBuilding(createBuildingDto);
+  }
+
+  @Post(':id')
+  addFacilities(@Param('id') id:number, @Body() AddFacilityDto: AddFacilityDto){
+    return this.buildingService.assignFacilitiesAndCreateTable(id,AddFacilityDto)
   }
 
   @Get()
