@@ -43,11 +43,11 @@ export class BuildingService extends BaseService<BuildingEntity> {
 
   async assignFacilitiesAndCreateTable(id: number, AddFacilityDto:AddFacilityDto): Promise<BuildingEntity> {
     const building = await this.buildingRepository.findOne({where: {id}});
-    const buildFacilities: CommonFacilityEntity[] = [];
+    
     for (const f of AddFacilityDto.facilities) {
         const facility = await this.commonService.findOne(f.facilityId);
         if (facility) {
-            buildFacilities.push(facility);
+           
             const buildingHasFacility: BuildingHasFacilityEntity = new BuildingHasFacilityEntity();
             const data = f.renovationDate ? [f.renovationDate, building, facility] : [building.constructionDate, building, facility];
             Object.assign(buildingHasFacility, data);
@@ -57,15 +57,10 @@ export class BuildingService extends BaseService<BuildingEntity> {
             throw new NotFoundException(`Common Facility with ID ${f} not found`);
         }
     }
-    building.facilities = buildFacilities;
+    
 
     return this.saveEntities(building)?.[0];
 }
-
-  /*Le probleme c'est que l'id du building n'est pas encore définis car on l'as pas encore enregistré en base donc pas d'id dans la const data
-  a voir si avec async et enregistré le building pendant la fonction pour avoir son id ou faire la fonction en deux fois a voir 
-  Voir sur internet si il y a une autre méthode
-  */
 
   findAll(): Promise<BuildingEntity[]> {
     return this.buildingRepository.find({

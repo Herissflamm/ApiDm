@@ -18,16 +18,30 @@ export class BuildingHasFacilityService extends BaseService<BuildingHasFacilityE
     super(dataSource);
   }
 
-  async create(createBuildingHasFacilityDto: CreateBuildingHasFacilityDto):Promise<BuildingHasFacilityEntity> {
-    console.log(createBuildingHasFacilityDto);
+  async create(createBuildingHasFacilityDto: BuildingHasFacilityEntity):Promise<BuildingHasFacilityEntity> {
+
     const infoFacilitie:BuildingHasFacilityEntity = new BuildingHasFacilityEntity();
     /* Object.assign(infoFacilitie,createBuildingHasFacilityDto); */
     infoFacilitie.building = createBuildingHasFacilityDto[1];
     infoFacilitie.facility = createBuildingHasFacilityDto[2];
     infoFacilitie.renovationDate = createBuildingHasFacilityDto[0];
     console.log(infoFacilitie);
-    return await this.repository.save(infoFacilitie);
+    return await this.saveEntities(infoFacilitie)?.[0];
   }
+
+  async createwithDto(createBuildingHasFacilityDto: UpdateBuildingHasFacilityDto):Promise<BuildingHasFacilityEntity> {
+
+    const infoFacilitie:BuildingHasFacilityEntity = new BuildingHasFacilityEntity();
+    /* Object.assign(infoFacilitie,createBuildingHasFacilityDto); */
+    infoFacilitie.building = createBuildingHasFacilityDto[1];
+    infoFacilitie.facility = createBuildingHasFacilityDto[2];
+    infoFacilitie.renovationDate = createBuildingHasFacilityDto[0];
+    console.log(infoFacilitie);
+    return await this.saveEntities(infoFacilitie)?.[0];
+  }
+
+  /* // Probleme quand j'envoie plusieurs Facilities comprendre pourquoi ?
+  et aussi soucis de redondance ou je créer plusieurs fois le new BuildingHasFacilityEntity()*/
 
   findAll():Promise<BuildingHasFacilityEntity[]>{
     return this.repository.find(

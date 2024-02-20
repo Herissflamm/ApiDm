@@ -11,7 +11,7 @@ export class BuildingHasFacilityController {
 
   @Post()
   create(@Body() createBuildingHasFacilityDto: CreateBuildingHasFacilityDto) {
-    return this.buildingHasFacilityService.create(createBuildingHasFacilityDto);
+    return this.buildingHasFacilityService.createwithDto(createBuildingHasFacilityDto);
   }
 
   @Get()
