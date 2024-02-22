@@ -1,26 +1,54 @@
 import { Injectable } from '@nestjs/common';
 import { CreateOwnerDto } from './dto/create-owner.dto';
 import { UpdateOwnerDto } from './dto/update-owner.dto';
+import { OwnerEntity } from './entities/owner.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
+import { BaseService } from 'src/@core/base-service'; 
+import { PersonEntity } from 'src/person/entities/person.entity';
+import { PersonModule } from 'src/person/person.module';
+import { PersonService } from 'src/person/person.service';
 
 @Injectable()
-export class OwnerService {
-  create(createOwnerDto: CreateOwnerDto) {
-    return 'This action adds a new owner';
+export class OwnerService extends BaseService<OwnerEntity> {
+
+  constructor(
+    @InjectRepository(OwnerEntity)
+    private readonly repository: Repository<OwnerEntity>,
+    private readonly personService:PersonService, 
+    protected readonly dataSource: DataSource,
+  ) {
+    super(dataSource);
+  }
+
+  async create(createOwnerDto: CreateOwnerDto): Promise<OwnerEntity> {
+    const owner:OwnerEntity = new OwnerEntity();
+    Object.assign(owner, createOwnerDto);
+    const person:PersonEntity = await this.personService.create(createOwnerDto.person,)
+    owner.person = person
+    return await this.saveEntities(owner)?.[0];;
   }
 
   findAll() {
-    return `This action returns all owner`;
+    return this.repository.find({
+      relations:['person'],
+    })
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} owner`;
+    return this.repository.findOne({
+      where: { id },
+      relations: ['person'],
+    });
   }
 
-  update(id: number, updateOwnerDto: UpdateOwnerDto) {
-    return `This action updates a #${id} owner`;
+  async update(id: number, updateOwnerDto: UpdateOwnerDto) {
+    const owner = await this.repository.findOne({ where: { id } });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} owner`;
+  async remove(id: number) {
+    const result = await this.findOne(id);
+    await this.repository.delete(id);
+    return result;
   }
 }

@@ -1,6 +1,6 @@
 import { ApartmentEntity } from 'src/apartment/entities/apartment.entity';
 import { PersonEntity } from 'src/person/entities/person.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne ,ChildEntity} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne ,ChildEntity, JoinColumn} from 'typeorm';
 
 
 @ChildEntity('Owner')
@@ -13,4 +13,8 @@ export class OwnerEntity extends PersonEntity {
 
   @OneToMany(() => ApartmentEntity, (apartment) => apartment.owner)
   apartments: ApartmentEntity[];
+
+  @OneToOne(()=> PersonEntity)
+  @JoinColumn()
+  person:PersonEntity;
 }
