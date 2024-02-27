@@ -14,7 +14,4 @@ export class OwnerEntity extends PersonEntity {
   @OneToMany(() => ApartmentEntity, (apartment) => apartment.owner)
   apartments: ApartmentEntity[];
 
-  @OneToOne(()=> PersonEntity)
-  @JoinColumn()
-  person:PersonEntity;
 }

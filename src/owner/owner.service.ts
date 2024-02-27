@@ -24,8 +24,8 @@ export class OwnerService extends BaseService<OwnerEntity> {
   async create(createOwnerDto: CreateOwnerDto): Promise<OwnerEntity> {
     const owner:OwnerEntity = new OwnerEntity();
     Object.assign(owner, createOwnerDto);
-    const person:PersonEntity = await this.personService.create(createOwnerDto.person,)
-    owner.person = person
+    owner.tva = createOwnerDto.tva;
+    owner.account = createOwnerDto.account;
     return await this.saveEntities(owner)?.[0];;
   }
 

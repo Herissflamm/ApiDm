@@ -64,14 +64,14 @@ export class BuildingService extends BaseService<BuildingEntity> {
 
   findAll(): Promise<BuildingEntity[]> {
     return this.buildingRepository.find({
-      relations: ['facilities', 'address'],
+      relations: ['address'],
     });
   }
 
   findOne(id: number): Promise<BuildingEntity> {
     return this.buildingRepository.findOne({
       where: { id },
-      relations: ['facilities', 'address'],
+      relations: ['address'],
     });
   }
 

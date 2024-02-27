@@ -11,6 +11,8 @@ import { ApartmentTypeService } from 'src/apartment-type/apartment-type.service'
 import { ApartmentTypeEntity } from 'src/apartment-type/entities/apartment-type.entity';
 import { ApartmentOptionService } from 'src/apartment-option/apartment-option.service';
 import { ApartmentOptionEntity } from 'src/apartment-option/entities/apartment-option.entity';
+import { PersonEntity } from 'src/person/entities/person.entity';
+import { TenantEntity } from 'src/tenant/entities/tenant.entity';
 
 @Injectable()
 export class ApartmentService extends BaseService<ApartmentEntity>{
@@ -57,7 +59,7 @@ export class ApartmentService extends BaseService<ApartmentEntity>{
   async findAll(): Promise<ApartmentEntity[]> {
     try {
         const apartments: ApartmentEntity[] = await this.repository.find({
-            relations: ['building', 'type','options'],
+            relations: ['building', 'type','options', 'principalTenant'],
         });
         return apartments;
     } catch (error) {
@@ -70,9 +72,16 @@ export class ApartmentService extends BaseService<ApartmentEntity>{
   async findOne(id: number):Promise<ApartmentEntity> {
     const result:ApartmentEntity = await this.repository.findOne({
       where: {id},
-      relations: ['type', 'building','options'],
+      relations: ['type', 'building','options', 'principalTenant'],
     })
     return result;
+  }
+
+  findPrincipalTenant(id: number) {
+    return this.repository.find({
+      where: {id},
+      relations:['principalTenant'],
+    })
   }
 
   async update(id: number, updateApartmentDto: UpdateApartmentDto): Promise<ApartmentEntity> {
@@ -93,7 +102,12 @@ export class ApartmentService extends BaseService<ApartmentEntity>{
 
     Object.assign(apartment, updateApartmentDto);
     return await this.repository.save(apartment);
-}
+  }
+
+  async addPrincipalTenant(apartment: ApartmentEntity, tenant: PersonEntity){
+    apartment.principalTenant = tenant
+    return (await this.saveEntities(apartment))?.[0];
+  }
 
 
   async remove(id: number): Promise<ApartmentEntity> {

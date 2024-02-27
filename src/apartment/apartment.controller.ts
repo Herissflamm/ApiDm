@@ -14,6 +14,11 @@ export class ApartmentController {
     return this.apartmentService.create(createApartmentDto);
   }
 
+  @Get(':idForTenantPrincipal')
+  findPrincipalTenant(@Param('idForTenantPrincipal') id: string) {
+    return this.apartmentService.findPrincipalTenant(+id);
+  }
+
   @Get()
   findAll() {
     return this.apartmentService.findAll();

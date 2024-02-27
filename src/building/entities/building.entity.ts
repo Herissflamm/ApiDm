@@ -15,10 +15,6 @@ export class BuildingEntity {
   @OneToMany(() => ApartmentEntity, (apartment) => apartment.building, {nullable : true})
   apartments: ApartmentEntity[];
 
-  @ManyToMany(()=>CommonFacilityEntity,facilitie => facilitie.buildings)
-  @JoinTable()
-  facilities:CommonFacilityEntity[];
-
   @OneToOne(() => AddressEntity)
   @JoinColumn()
   address: AddressEntity

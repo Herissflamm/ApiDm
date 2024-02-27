@@ -18,7 +18,5 @@ import {
     @Column()
     name: string;
   
-    @ManyToMany(()=> BuildingEntity, building => building.facilities)
-    buildings:BuildingEntity[];
   }
   

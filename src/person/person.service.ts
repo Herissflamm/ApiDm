@@ -25,11 +25,16 @@ export class PersonService extends BaseService<PersonEntity> {
   }
 
   findAll():Promise<PersonEntity[]> {
-    return this.repository.find();
+    return this.repository.find({
+      relations:['apartment'],
+    })
   }
 
   findOne(id: number):Promise<PersonEntity> {
-    return this.repository.findOneBy({ id });
+    return this.repository.findOne({
+      where: { id },
+      relations: ['apartment'],
+    });
   }
 
   async update(id: number, updatePersonDto: UpdatePersonDto):Promise<PersonEntity> {

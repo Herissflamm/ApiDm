@@ -3,15 +3,17 @@ import { TenantService } from './tenant.service';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { UpdateTenantDto } from './dto/update-tenant.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { ApartmentService } from 'src/apartment/apartment.service';
+import { PersonEntity } from 'src/person/entities/person.entity';
 
 @ApiTags('Tenant')
 @Controller('tenant')
 export class TenantController {
-  constructor(private readonly tenantService: TenantService) {}
+  constructor(private readonly tenantService: TenantService, private readonly apartmenService : ApartmentService) {}
 
   @Post()
-  create(@Body() createTenantDto: CreateTenantDto) {
-    return this.tenantService.create(createTenantDto);
+  async create(@Body() createTenantDto: CreateTenantDto) {
+    await this.tenantService.create(createTenantDto);
   }
 
   @Get()

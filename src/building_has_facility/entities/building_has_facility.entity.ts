@@ -11,11 +11,11 @@ export class BuildingHasFacilityEntity {
     @Column({nullable:true})
     renovationDate: Date;
 
-    @ManyToOne(()=>BuildingEntity, building => building.facilities)
+    @ManyToOne(()=>BuildingEntity, building => building.id)
     @JoinColumn()
     building: BuildingEntity;
 
-    @ManyToOne(()=>CommonFacilityEntity, commonFacility => commonFacility.buildings)
+    @ManyToOne(()=>CommonFacilityEntity, commonFacility => commonFacility.id)
     @JoinColumn()
     facility: CommonFacilityEntity;
 }

@@ -30,17 +30,13 @@ const db_port: number = parseInt(process.env.DB_Port)
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'mssql',
+      type: 'mysql',
       host: process.env.DB_Host, // ou '127.0.0.1'
       port: db_port,
       username: process.env.DB_Username,
       password: process.env.DB_Password,
       database: process.env.DB_Name,
-      options: {
-        trustServerCertificate: true,
-        useUTC: true,
-      },
-      synchronize: true, // Utilisez avec prudence, surtout en production
+      synchronize: false, // Utilisez avec prudence, surtout en production
       logging: true, // Pour voir les logs dans la console
       entities: [
         AddressEntity,
