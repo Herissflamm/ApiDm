@@ -35,7 +35,11 @@ export class TenantService extends BaseService<PersonEntity>{
       const person = await this.personService.findOne(id);
       if(apartment != null){
         if(apartment.principalTenant == undefined){
-          await this.apartmentService.addPrincipalTenant(apartment, person);
+          const appart = await this.apartmentService.addPrincipalTenant(apartment, person);
+          const personEntity:TenantEntity = new TenantEntity();
+          Object.assign(personEntity, resultat);
+          personEntity.apartment = appart;
+          await this.repository.save(personEntity);
         }   
       }
     });

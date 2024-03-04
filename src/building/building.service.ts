@@ -84,7 +84,9 @@ export class BuildingService extends BaseService<BuildingEntity> {
     for(let i = 0; i < building.apartments.length; i++){
       
       let apartment = await this.apartmentService.findOne(building.apartments[i].id);
+      
       let numberTenantInApartment = apartment.tenants.length;
+      console.log(apartment.tenants);
       if(numberTenantInApartment >0){
         numberApartmentsOccupy++;
         numberTenant += numberTenantInApartment;
