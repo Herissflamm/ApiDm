@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, forwardRef } from '@nestjs/common';
 import { CreateBuildingDto } from './dto/create-building.dto';
 import { UpdateBuildingDto } from './dto/update-building.dto';
 import { BaseService } from 'src/@core/base-service';
@@ -12,10 +12,13 @@ import { BuildingHasFacilityEntity } from 'src/building_has_facility/entities/bu
 import { CommonFacilityEntity } from 'src/common-facility/entities/common-facility.entity';
 import { AddressEntity } from 'src/address/entities/address.entity';
 import { AddFacilityDto } from './dto/add-facilities.dto';
+import { ApartmentService } from 'src/apartment/apartment.service';
 
 @Injectable()
 export class BuildingService extends BaseService<BuildingEntity> {
   constructor(
+    @Inject(forwardRef(() => ApartmentService))
+    private readonly apartmentService: ApartmentService,
     @InjectRepository(BuildingEntity)
     private readonly buildingRepository: Repository<BuildingEntity>,
     private readonly addressService: AddressService,
@@ -68,13 +71,42 @@ export class BuildingService extends BaseService<BuildingEntity> {
     });
   }
 
-  findOne(id: number): Promise<BuildingEntity> {
-    return this.buildingRepository.findOne({
+  async findOne(id: number): Promise<BuildingEntity> {
+    const building = await this.buildingRepository.findOne({
       where: { id },
-      relations: ['address'],
+      relations: ['address', 'apartments'],
     });
+    let percentageOccupy = 0; 
+    let numberApartmentsOccupy = 0;
+    let numberTenant = 0;
+    let numberUnderOccupy = 0;
+    let numberOverOccupy = 0;
+    for(let i = 0; i < building.apartments.length; i++){
+      
+      let apartment = await this.apartmentService.findOne(building.apartments[i].id);
+      let numberTenantInApartment = apartment.tenants.length;
+      if(numberTenantInApartment >0){
+        numberApartmentsOccupy++;
+        numberTenant += numberTenantInApartment;
+        let capacity = apartment.type.capacity;
+        if(numberTenantInApartment > 0 && numberTenantInApartment < capacity){
+          numberUnderOccupy++;
+        }
+        if(numberTenantInApartment > capacity){
+          numberOverOccupy++;
+        }
+      }
+    }
+    percentageOccupy = (numberApartmentsOccupy*100 )/building.apartments.length;
+    building.apartmentsNumber = building.apartments.length;
+    delete building.apartments;
+    building.percentageOccupy = `${Number(percentageOccupy.toFixed(1))}%`;
+    building.numberTenant = numberTenant;
+    building.numberUnderOccupy = numberUnderOccupy;
+    building.numberOverOccupy = numberOverOccupy;
+    return building;
   }
-
+  
   async update(
     id: number,
     updateBuildingDto: UpdateBuildingDto,

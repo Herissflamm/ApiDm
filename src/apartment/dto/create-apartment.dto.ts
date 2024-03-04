@@ -14,6 +14,9 @@ export class CreateApartmentDto {
     @ApiProperty()
     door: number;
 
+    @ApiProperty()
+    rent: number;
+
     @ApiProperty({ type: [Number] })
     options: number[];
     

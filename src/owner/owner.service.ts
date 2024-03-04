@@ -8,6 +8,7 @@ import { BaseService } from 'src/@core/base-service';
 import { PersonEntity } from 'src/person/entities/person.entity';
 import { PersonModule } from 'src/person/person.module';
 import { PersonService } from 'src/person/person.service';
+import { ApartmentService } from 'src/apartment/apartment.service';
 
 @Injectable()
 export class OwnerService extends BaseService<OwnerEntity> {
@@ -17,29 +18,43 @@ export class OwnerService extends BaseService<OwnerEntity> {
     private readonly repository: Repository<OwnerEntity>,
     private readonly personService:PersonService, 
     protected readonly dataSource: DataSource,
+    protected readonly apartmentService: ApartmentService,
   ) {
     super(dataSource);
   }
 
-  async create(createOwnerDto: CreateOwnerDto): Promise<OwnerEntity> {
+  async create(createOwnerDto: CreateOwnerDto){
     const owner:OwnerEntity = new OwnerEntity();
     Object.assign(owner, createOwnerDto);
+    const apartment = await this.apartmentService.findOne(createOwnerDto.apartmentId);
     owner.tva = createOwnerDto.tva;
     owner.account = createOwnerDto.account;
-    return await this.saveEntities(owner)?.[0];;
+    await this.saveEntity(owner).then(async resultat =>{
+      if(apartment != null){
+        await this.apartmentService.addNewOwner(apartment,resultat);
+      }
+    });
   }
 
   findAll() {
     return this.repository.find({
-      relations:['person'],
+      relations:['apartments'],
     })
   }
 
-  findOne(id: number) {
-    return this.repository.findOne({
+  async findOne(id: number) {
+    const result = await this.repository.findOne({
       where: { id },
-      relations: ['person'],
+      relations: ['apartments'],
     });
+
+    let rent = 0;
+    for(let i = 0; i < result.apartments.length; i++){
+      let appartement = await this.apartmentService.findOne(result.apartments[i].id);
+      rent += appartement.rent*appartement.tenants.length;   
+    }
+    result.rentGet = rent;
+    return result;
   }
 
   async update(id: number, updateOwnerDto: UpdateOwnerDto) {

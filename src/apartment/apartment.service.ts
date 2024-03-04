@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, forwardRef } from '@nestjs/common';
 import { CreateApartmentDto } from './dto/create-apartment.dto';
 import { UpdateApartmentDto } from './dto/update-apartment.dto';
 import { BaseService } from 'src/@core/base-service';
@@ -12,7 +12,7 @@ import { ApartmentTypeEntity } from 'src/apartment-type/entities/apartment-type.
 import { ApartmentOptionService } from 'src/apartment-option/apartment-option.service';
 import { ApartmentOptionEntity } from 'src/apartment-option/entities/apartment-option.entity';
 import { PersonEntity } from 'src/person/entities/person.entity';
-import { TenantEntity } from 'src/tenant/entities/tenant.entity';
+import { OwnerEntity } from 'src/owner/entities/owner.entity';
 
 @Injectable()
 export class ApartmentService extends BaseService<ApartmentEntity>{
@@ -20,6 +20,7 @@ export class ApartmentService extends BaseService<ApartmentEntity>{
   constructor(
     @InjectRepository(ApartmentEntity)
     protected readonly repository: Repository<ApartmentEntity>,
+    @Inject(forwardRef(() => BuildingService))
     protected readonly buildingService: BuildingService,
     protected readonly apartmentTypeService: ApartmentTypeService,
     protected readonly apartmentOptionService: ApartmentOptionService,
@@ -72,16 +73,17 @@ export class ApartmentService extends BaseService<ApartmentEntity>{
   async findOne(id: number):Promise<ApartmentEntity> {
     const result:ApartmentEntity = await this.repository.findOne({
       where: {id},
-      relations: ['type', 'building','options', 'principalTenant'],
+      relations: ['type', 'building','options', 'principalTenant', 'tenants'],
     })
     return result;
   }
 
-  findPrincipalTenant(id: number) {
-    return this.repository.find({
+  async findPrincipalTenant(id: number) {
+    const result:ApartmentEntity = await this.repository.findOne({
       where: {id},
       relations:['principalTenant'],
     })
+    return result;
   }
 
   async update(id: number, updateApartmentDto: UpdateApartmentDto): Promise<ApartmentEntity> {
@@ -105,7 +107,12 @@ export class ApartmentService extends BaseService<ApartmentEntity>{
   }
 
   async addPrincipalTenant(apartment: ApartmentEntity, tenant: PersonEntity){
-    apartment.principalTenant = tenant
+    apartment.principalTenant = tenant;
+    return (await this.saveEntities(apartment))?.[0];
+  }
+
+  async addNewOwner(apartment: ApartmentEntity, owner: OwnerEntity){
+    apartment.owner = owner;
     return (await this.saveEntities(apartment))?.[0];
   }
 

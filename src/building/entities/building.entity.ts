@@ -1,3 +1,4 @@
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { AddressEntity } from 'src/address/entities/address.entity';
 import { ApartmentEntity } from 'src/apartment/entities/apartment.entity';
 import { BuildingHasFacilityEntity } from 'src/building_has_facility/entities/building_has_facility.entity';
@@ -18,4 +19,20 @@ export class BuildingEntity {
   @OneToOne(() => AddressEntity)
   @JoinColumn()
   address: AddressEntity
+
+  @ApiProperty({ readOnly: true })
+  apartmentsNumber: number;
+
+  @ApiProperty({ readOnly: true })
+  percentageOccupy: string;
+
+  @ApiProperty({ readOnly: true })
+  numberTenant: number;
+
+  @ApiProperty({ readOnly: true, default: 0 })
+  numberUnderOccupy: number;
+
+  @ApiProperty({ readOnly: true, default: 0 })
+  numberOverOccupy: number;
+
 }

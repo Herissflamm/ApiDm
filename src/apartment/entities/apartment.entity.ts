@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { ApartmentOptionEntity } from 'src/apartment-option/entities/apartment-option.entity';
 import { ApartmentTypeEntity } from 'src/apartment-type/entities/apartment-type.entity';
 import { BuildingEntity } from 'src/building/entities/building.entity';
@@ -17,6 +18,9 @@ export class ApartmentEntity {
 
   @Column()
   door: number;
+
+  @Column()
+  rent: number;
 
   @OneToOne(()=> PersonEntity)
   @JoinColumn()

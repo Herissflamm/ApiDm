@@ -16,4 +16,7 @@ export class CreateOwnerDto {
 
     @ApiProperty()
     tva: boolean;
+
+    @ApiProperty()
+    apartmentId: number;
 }

@@ -36,7 +36,7 @@ export class TenantService extends BaseService<PersonEntity>{
       if(apartment != null){
         if(apartment.principalTenant == undefined){
           await this.apartmentService.addPrincipalTenant(apartment, person);
-        }
+        }   
       }
     });
   }
