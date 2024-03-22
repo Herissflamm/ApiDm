@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { UpdateTenantDto } from './dto/update-tenant.dto';
-import { OwnerEntity } from 'src/owner/entities/owner.entity';
 import { BaseService } from 'src/@core/base-service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';

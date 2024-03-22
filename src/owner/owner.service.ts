@@ -50,8 +50,11 @@ export class OwnerService extends BaseService<OwnerEntity> {
 
     let rent = 0;
     for(let i = 0; i < result.apartments.length; i++){
-      let appartement = await this.apartmentService.findOne(result.apartments[i].id);
-      rent += appartement.rent*appartement.tenants.length;   
+      let apartment = await this.apartmentService.findOne(result.apartments[i].id);
+      rent += apartment.rent*apartment.tenants.length;
+      if(apartment.principalTenant!=undefined){
+        rent += apartment.rent;
+      }
     }
     result.rentGet = rent;
     return result;

@@ -32,7 +32,7 @@ const db_port: number = parseInt(process.env.DB_Port)
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DB_Host, // ou '127.0.0.1'
-      port: db_port,
+      port: 3306,
       username: process.env.DB_Username,
       password: process.env.DB_Password,
       database: process.env.DB_Name,
