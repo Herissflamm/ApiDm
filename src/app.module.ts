@@ -31,13 +31,13 @@ const db_port: number = parseInt(process.env.DB_Port)
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: process.env.DB_Host, // ou '127.0.0.1'
+      host: '', //a editer
       port: 3306,
-      username: process.env.DB_Username,
-      password: process.env.DB_Password,
-      database: process.env.DB_Name,
-      synchronize: false, // Utilisez avec prudence, surtout en production
-      logging: true, // Pour voir les logs dans la console
+      username: '', //a editer
+      password: '', //a editer
+      database: '', //a editer
+      synchronize: true, 
+      logging: true, 
       entities: [
         AddressEntity,
         ApartmentEntity,
