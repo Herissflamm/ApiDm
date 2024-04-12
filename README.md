@@ -17,13 +17,20 @@ Representes par une interface avec les particularités suivantes
 ```bash
 $ npm install
 ```
-## Base de données 
-Le fonctionnement de l'api necessite une base de donnée MySQL nommé ApiDm
+## Configuration du projet
+
+Veuillez configurer le fichier app.module.ts avec les données de connexion à la base de donnée.
+L'api a été développé avec une base de donnée MySQL nommé apidm
+Dans le fichier app.module.ts, synchronize doit être a true pour la création des tables. Puis ce champ doit passé à false.
+Après la configuration du projet, veuillez lancer la commande :
+
+```bash
+npm install mysql --save
+```
 
 ## Running the app
 
 ```bash
-# watch mode
 $ npm run start:dev
 ```
 
